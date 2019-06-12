@@ -1,25 +1,28 @@
 {
   "name": "typescript-hapi-rest-api",
-  "version": "1",
+  "version": "0.1",
   "description": "Typescript hapi rest boilerplate",
   "main": "index.js",
   "repository": "https://github.com/thibault-lr/typescript-hapi-rest-api.git",
   "author": "thibault-lr <leroy.thibault2@gmail.com>",
   "license": "MIT",
   "scripts": {
-    
     "clean": "rimraf ./build",
     "buildServer": "tsc",
+    "watchServer": "tsc --watch",
     "predev": "yarn run clean & yarn run buildServer",
-    "dev": "nodemon ./build/index.js",
-
-    "preprod":"yarn run clean ",
+    "devServer": "NODE_ENV=staging nodemon ./build/index.js",
+    "dev": "yarn run watchServer & yarn run devServer",
+    "preprod": "yarn run clean ",
     "prod": "tsc -project tsconfig.prod.json",
     "postprod": "NODE_ENV=production node ./build/index.js"
   },
   "dependencies": {
     "@hapi/hapi": "^18.3.1",
-    "rimraf": "^2.6.3"
+    "pg": "^7.11.0",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^2.6.3",
+    "typeorm": "^0.2.18"
   },
   "devDependencies": {
     "@types/hapi__hapi": "^18.2.3",
