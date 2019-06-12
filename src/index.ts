@@ -1,7 +1,9 @@
-class Test {
-  public static log() {
-    console.log('Test3')
-  }
-}
+import Server from './Server';
 
-Test.log();
+( async  () => {
+  const server = new Server(3000);
+
+  await server.start();
+  console.log('started on env',process.env.NODE_ENV);
+
+})()
