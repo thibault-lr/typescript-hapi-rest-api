@@ -1,5 +1,5 @@
 import * as Hapi from "@hapi/hapi";
-import UserController from "./user-controller";
+import UserController from "./user.controller";
 import { Connection } from "typeorm";
 
 export function init(server: Hapi.Server, database: Connection) {
@@ -10,7 +10,7 @@ export function init(server: Hapi.Server, database: Connection) {
     method: "GET",
     path: "/users",
     options: {
-      handler: userController.getUsers
+      handler: userController.getUsersCount
     }
   });
 }

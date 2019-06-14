@@ -25,10 +25,13 @@ class Server {
   }
 
   initControllers(database:Connection){
-
-    
     Users.init(this._server, database)
   }
+
+  getServer(): hapi.Server{
+    return this._server;
+  }
+
 
   private _setUpNodeExceptions() {
     //set up server exceptions
