@@ -20,6 +20,7 @@ class Server {
 
     } catch (e) {
       console.error(e.stack);
+      throw new Error('Unable to start server');
     }
     
   }

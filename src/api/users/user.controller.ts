@@ -5,6 +5,7 @@ class UserController {
   constructor(private database: Connection) {
   }
 
+  
   public async getUsersCount(request: Hapi.Request, h: Hapi.ResponseToolkit) {
     try {
       const users = await this.database.getRepository('User').count()

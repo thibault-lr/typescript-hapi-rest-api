@@ -19,7 +19,7 @@ class Database {
       });
     } catch (e) {
       console.error(e.stack);
-      throw e;
+      throw new Error('Unable to connect to database');
     }
   }
 
