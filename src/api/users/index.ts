@@ -1,16 +1,7 @@
 import * as Hapi from "@hapi/hapi";
-import UserController from "./user.controller";
+import { userRoutes } from './user.routes';
 import { Connection } from "typeorm";
 
-export function init(server: Hapi.Server, database: Connection) {
-  const userController = new UserController(database);
-  server.bind(userController);
-
-  server.route({
-    method: "GET",
-    path: "/users",
-    options: {
-      handler: userController.getUsersCount
-    }
-  });
+export function init(server: Hapi.Server, database: Connection){
+  userRoutes(server, database);
 }

@@ -1,14 +1,14 @@
-import * as hapi from "@hapi/hapi";
+import * as Hapi from "@hapi/hapi";
 import * as Users from "./api/users";
 import { Connection } from "typeorm";
 
 class Server {
 
-  private  _server: hapi.Server;
+  private  _server: Hapi.Server;
 
-  constructor(options: hapi.ServerOptions){
+  constructor(options: Hapi.ServerOptions){
 
-    this._server = new hapi.Server({host: options.host, port: options.port});
+    this._server = new Hapi.Server({host: options.host, port: options.port});
 
     this._setUpNodeExceptions();
   }
@@ -16,6 +16,7 @@ class Server {
   async start(){
     try {
       await this._server.start();
+      
       console.info('Server started on port', this._server.info.port);
 
     } catch (e) {
@@ -29,7 +30,7 @@ class Server {
     Users.init(this._server, database)
   }
 
-  getServer(): hapi.Server{
+  getServer(): Hapi.Server{
     return this._server;
   }
 
