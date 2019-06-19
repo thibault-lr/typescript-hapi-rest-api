@@ -1,4 +1,4 @@
-import { createConnection, Connection, EntitySchema } from "typeorm";
+import { createConnection, Connection } from "typeorm";
 import { User } from "./api/users/user.model";
 
 class Database {

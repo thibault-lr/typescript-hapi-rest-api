@@ -1,5 +1,11 @@
 import * as Hapi from "@hapi/hapi";
 import * as Users from "./api/users";
+
+// plugins 
+import VisionPlugin from "./plugins/vision";
+import InertPlugin from "./plugins/inert";
+import SwaggerPlugin from "./plugins/swagger";
+
 import { Connection } from "typeorm";
 
 class Server {
@@ -28,6 +34,19 @@ class Server {
 
   initControllers(database:Connection){
     Users.init(this._server, database)
+  }
+
+  async initPlugins() {
+     try {
+      
+      await SwaggerPlugin(this._server);
+      await InertPlugin(this._server)
+      await VisionPlugin(this._server); 
+    }
+    catch (err) {
+      console.error(err);
+      throw new Error('Unable to register plugins');
+    }
   }
 
   getServer(): Hapi.Server{

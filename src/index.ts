@@ -9,12 +9,14 @@ const NODE_PORT = process.env.NODE_PORT || 3000;
 ( async  () => {
   const server = new Server({host: NODE_HOST, port: NODE_PORT});
 
-  await server.start();
+  
   
   try {
     await Database.createConnection();
     
     server.initControllers(Database.conn);
+    await server.initPlugins();
+    await server.start();
     
   } catch (error){
     console.error("Init err",error.stack);
