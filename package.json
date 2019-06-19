@@ -1,0 +1,44 @@
+{
+  "name": "typescript-hapi-rest-api",
+  "version": "0.1",
+  "description": "Typescript hapi rest boilerplate",
+  "main": "index.js",
+  "repository": "https://github.com/thibault-lr/typescript-hapi-rest-api.git",
+  "author": "thibault-lr <leroy.thibault2@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf ./build",
+    "buildServer": "tsc",
+    "watchServer": "tsc --watch",
+    "predev": "yarn run clean & yarn run buildServer",
+    "devServer": "NODE_ENV=staging nodemon ./build/index.js",
+    "dev": "yarn run watchServer & yarn run devServer",
+    "preprod": "yarn run clean ",
+    "prod": "tsc -project tsconfig.prod.json",
+    "postprod": "NODE_ENV=production node ./build/index.js",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/inert": "^5.2.0",
+    "@hapi/vision": "^5.5.2",
+    "hapi-swagger": "^10.0.2",
+    "pg": "^7.11.0",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^2.6.3",
+    "typeorm": "^0.2.18"
+  },
+  "devDependencies": {
+    "@types/hapi__hapi": "^18.2.3",
+    "@types/hapi__inert": "^5.2.0",
+    "@types/hapi__vision": "^5.5.0",
+    "@types/jest": "^24.0.14",
+    "@types/sinon": "^7.0.13",
+    "inject-then": "^2.0.9",
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.1",
+    "sinon": "^7.3.2",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "watch": ["build"],
+  "verbose": true,
+  "ext": "js",
+  "env": {
+    "NODE_ENV": "staging"
+  },
+  "ignore": [
+    "node_modules"
+  ]  
+}
