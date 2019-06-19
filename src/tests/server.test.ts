@@ -14,4 +14,13 @@ describe('Server testing', () => {
     expect(error).toBeInstanceOf(Error);
     expect(error).toEqual(new Error("Unable to start server"));
   })
+
+  it('Should register the plugins correctly', async () => {
+    const server = new Server.default({ host: "localhost", port: 3003 });
+    await server.initPlugins();
+
+    let registrationsKeys = Object.keys(server.getServer().registrations);
+
+    expect(registrationsKeys).toEqual(["hapi-swagger","inert","vision"])
+  })
 })
