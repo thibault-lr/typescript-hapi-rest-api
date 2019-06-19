@@ -22,7 +22,6 @@ You need the following environments variables to start the app
 |NODE_HOST | Node host | Optional (Default value is ``localhost``) |
 |NODE_PORT | Node port | Optional (Default value is ``3000``) |
 
-StackEdit stores your files in your browser, which means all your files are automatically saved locally and are accessible **offline!**
 
 # Start
 
