@@ -1,0 +1,40 @@
+version: "3.5"
+services:
+  api:
+    build: ./app
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: postgres
+      NODE_HOST: 0.0.0.0
+    volumes:
+      - ./app:/usr/src/app
+        
+  db:
+    image: postgres:11
+    build: ./database
+    container_name: pgsql
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./database/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      
+      # Uncomment if you want to add fixtures to the database
+      # - ./database/fixtures.sql:/docker-entrypoint-initdb.d/fixtures.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped      
+
+
+networks:
+  postgres:
+    driver: bridge      
