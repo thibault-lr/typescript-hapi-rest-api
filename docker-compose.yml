@@ -7,12 +7,12 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DB_HOST: host.docker.internal
-      DB_PORT: 5432
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-      DB_DATABASE: postgres
-      NODE_HOST: 0.0.0.0
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      NODE_HOST: ${NODE_HOST}
     volumes:
       - ./app:/usr/src/app
         
@@ -21,8 +21,8 @@ services:
     build: ./database
     container_name: pgsql
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     volumes:
       - ./database/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       

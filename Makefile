@@ -3,6 +3,9 @@
 CONTAINER_PREFIX=hapi-rest-api
 DC=docker-compose -p ${CONTAINER_PREFIX}
 
+copy-env: ## Create the .env file at the root
+	cp -n .env.template .env;  if [ $$? -eq 0 ] ; then echo "\n\033[31m[ERR] File .env already exists\033[0m\n" ; fi
+	
 setup: pull build up ## Setup the development environment
 
 pull: ## Pull the external images
