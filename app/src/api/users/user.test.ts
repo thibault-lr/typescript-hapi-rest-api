@@ -1,4 +1,4 @@
-import  * as Server from './../../server';
+import  * as Server from '../../server';
 import * as Database from './../../database';
 
 
