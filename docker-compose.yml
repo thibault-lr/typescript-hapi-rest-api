@@ -24,10 +24,10 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
     volumes:
-      - ./database/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./database/1.setup.sql:/docker-entrypoint-initdb.d/1.setup.sql
       
       # Uncomment if you want to add fixtures to the database
-      # - ./database/fixtures.sql:/docker-entrypoint-initdb.d/fixtures.sql
+      - ./database/2.fixtures.sql:/docker-entrypoint-initdb.d/2.fixtures.sql
     ports:
       - "5432:5432"
     networks:
