@@ -27,7 +27,7 @@ destroy: ## Destroy the containers, volumes, networks…
 	${DC} down -v --remove-orphan
 
 
-bash: ARGS = hapi-rest-api_api_1
+bash: ARGS = hapi-rest-api_api
 bash: ## Run bash shell
 	${DC} exec ${ARGS} bash	
 

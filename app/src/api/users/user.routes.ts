@@ -8,11 +8,15 @@ export function userRoutes(server: Hapi.Server, database: Connection){
     const userController = new UserController(database);
     server.bind(userController);
 
+    //Get users
     server.route({
       method: RequestMethodEnum.Get,
       path: "/users",
       options: {
-        handler: userController.getUsersCount
+        handler: userController.getUsersCount,
+        tags: ['api']
       }
     });
+
+
 }

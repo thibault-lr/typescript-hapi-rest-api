@@ -1,0 +1,11 @@
+version: "3.5"
+services:
+  api:
+    build:
+      context: "./app/"
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: staging
+    volumes:
+      - ./app:/usr/src/app
+    

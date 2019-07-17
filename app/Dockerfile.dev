@@ -8,8 +8,11 @@ COPY yarn.lock /usr/src/app
 RUN npm install yarn -g 
 RUN yarn install
 
+# nodemon
+RUN npm install -g nodemon
+
 # copy source files
 COPY ./ /usr/src/app
 
-CMD ["yarn","prod"]
+CMD ["yarn","dev"]
 EXPOSE 3000
