@@ -2,5 +2,6 @@
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  dep TEXT
+  name TEXT,
+  department TEXT
 );

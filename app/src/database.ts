@@ -1,5 +1,5 @@
 import { createConnection, Connection } from "typeorm";
-import { User } from "./api/users/user.model";
+import  User from "./api/users/user.model";
 
 class Database {
   public static conn: Connection;

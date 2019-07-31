@@ -1,1 +1,1 @@
-INSERT INTO users("dep") VALUES('dep1'),('dep2'),('dep3');
+INSERT INTO users("name","department") VALUES('test','dep1'),('test2','dep2'),('test3','dep3');
