@@ -1,5 +1,6 @@
 import * as Hapi from "@hapi/hapi";
 import * as Users from "./api/users";
+import * as Auth from "./api/auth";
 
 // plugins 
 import VisionPlugin from "./plugins/vision";
@@ -34,6 +35,7 @@ class Server {
 
   initControllers(database:Connection){
     Users.init(this._server, database)
+    Auth.init(this._server)
   }
 
   async initPlugins() {
