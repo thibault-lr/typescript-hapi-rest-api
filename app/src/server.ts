@@ -5,7 +5,7 @@ import * as Users from "./api/users";
 import VisionPlugin from "./plugins/vision";
 import InertPlugin from "./plugins/inert";
 import SwaggerPlugin from "./plugins/swagger";
-
+import AuthPlugin from "./plugins/hapi-jwt";
 import { Connection } from "typeorm";
 
 class Server {
@@ -42,6 +42,7 @@ class Server {
       await SwaggerPlugin(this._server);
       await InertPlugin(this._server)
       await VisionPlugin(this._server); 
+      await AuthPlugin(this._server);
     }
     catch (err) {
       console.error(err);
