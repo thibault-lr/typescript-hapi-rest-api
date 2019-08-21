@@ -15,7 +15,7 @@ class Database {
         database: process.env.DB_DATABASE,
         entities: [User],
         synchronize: true,
-        logging: true
+        logging: false
       });
     } catch (e) {
       console.error(e.stack);

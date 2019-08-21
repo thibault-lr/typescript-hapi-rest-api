@@ -14,7 +14,7 @@ const NODE_PORT = process.env.NODE_PORT || 3000;
   try {
     await Database.createConnection();
     
-    server.initControllers(Database.conn);
+    server.initControllers();
     await server.initPlugins();
     await server.start();
     

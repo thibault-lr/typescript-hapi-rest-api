@@ -4,9 +4,9 @@ import UserController from "./user.controller";
 import { Connection } from "typeorm";
 import RequestMethodEnum from './../../constants/RequestMethodEnum'
 
-export function userRoutes(server: Hapi.Server, database: Connection){
+export function userRoutes(server: Hapi.Server){
 
-    const userController = new UserController(database);
+    const userController = new UserController();
     server.bind(userController);
 
     //Get users

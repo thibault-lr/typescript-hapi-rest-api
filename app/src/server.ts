@@ -7,7 +7,6 @@ import VisionPlugin from "./plugins/vision";
 import InertPlugin from "./plugins/inert";
 import SwaggerPlugin from "./plugins/swagger";
 import AuthPlugin from "./plugins/hapi-jwt";
-import { Connection } from "typeorm";
 
 class Server {
 
@@ -33,8 +32,8 @@ class Server {
     
   }
 
-  initControllers(database:Connection){
-    Users.init(this._server, database)
+  initControllers(){
+    Users.init(this._server)
     Auth.init(this._server)
   }
 

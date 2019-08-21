@@ -1,27 +1,29 @@
-import  * as Server from '../../server';
-import * as Database from './../../database';
+import Server from '../../server';
+import {getConnection} from "typeorm"
+import Database from '../../database';
 
 
 
 
 describe("User Testing", function() {
-  let server: Server.default;
+  let server: Server;
 
   beforeAll( async done => {
-    server = new Server.default({ host: "localhost", port: 3000 });
+    server = new Server({ host: "localhost", port: 3000 });
     await server.start()
-    await Database.default.createConnection()
-    server.initControllers(Database.default.conn);
+    await Database.createConnection()
+    await getConnection().query("DELETE FROM users");
+
+    server.initControllers();
     done();
   });
 
   afterAll( async done => {
-
-    await Database.default.conn.query("DELETE FROM users");
-
+    await getConnection().query("DELETE FROM users");
     //reset the sequence 
-    await Database.default.conn.query("ALTER SEQUENCE users_id_seq RESTART WITH 1");
-    await Database.default.conn.query("UPDATE users SET id=nextval('users_id_seq')")
+    await getConnection().query("ALTER SEQUENCE users_id_seq RESTART WITH 1");
+    await getConnection().query("UPDATE users SET id=nextval('users_id_seq')")
+    await server.getServer().stop()
     done();
   })
 
@@ -82,7 +84,7 @@ describe("User Testing", function() {
 
     // add a random user 
     beforeEach( async done => {
-      await Database.default.conn.query(`INSERT INTO users("name","department") VALUES('test','dep1')`);
+      await getConnection().query(`INSERT INTO users("name","department") VALUES('test','dep1')`);
       done();
     })
 
