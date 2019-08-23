@@ -20,8 +20,7 @@ class AuthController {
 
     let user: UserModel | undefined;
     try {
-      user = await getRepository(User).findOne({name: login});
-    
+      user = await getRepository(User).findOne({login: login});
     
 
     if (!user) return Boom.notFound("User does not exists");
@@ -32,7 +31,6 @@ class AuthController {
 
     return { token: JWTUtils.generateToken(user) };
     } catch (error) {
-      console.error(error);
       return Boom.unauthorized();
     }
   }

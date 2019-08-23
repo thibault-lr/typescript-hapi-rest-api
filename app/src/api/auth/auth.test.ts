@@ -9,7 +9,7 @@ describe("Auth testing", () => {
 
   // start the server 
   beforeAll( async done => {
-    server = new Server({host: "localhost", port:4002});
+    server = new Server({host: "localhost", port:4003});
     await server.start()
     await Database.createConnection()
     server.initControllers();
@@ -23,16 +23,18 @@ describe("Auth testing", () => {
   });
 
   describe("Auth - login", () => {
+
+    let userSqlObj:any; 
     beforeAll( async done => {
       const salt = Bcrypt.genSaltSync(10);
       const password = Bcrypt.hashSync("test",salt);
-      await getConnection().query(
-        `INSERT INTO "users"("name", "department", "login", "password") VALUES('testauth', 'dep1', 'test', '${password}')`      );
+      userSqlObj = await getConnection().query(
+        `INSERT INTO "users"("name", "department", "login", "password") VALUES('test', 'dep1', 'testauth', '${password}') RETURNING id`      );
       done();      
     });
 
     afterAll( async done => {
-      await getConnection().query("DELETE FROM users WHERE name = 'testauth'");
+      await getConnection().query(`DELETE FROM users WHERE id=${userSqlObj[0].id}`);
       done();
     })
 
@@ -42,7 +44,7 @@ describe("Auth testing", () => {
 
       const options = {
         method: "POST",
-        url: "/auth/login",
+        url: "/v1/auth/login",
         payload: {
           login: "testauth",
           password: "test"
@@ -59,7 +61,7 @@ describe("Auth testing", () => {
     test("It should not generate a token with bad credentials", async done  => {
       const options = {
         method: "POST",
-        url: "/auth/login",
+        url: "/v1/auth/login",
         payload: {
           login: "testauth",
           password: "wrongpassword"
@@ -79,7 +81,7 @@ describe("Auth testing", () => {
     test("It should return a not found error ", async done => {
       const options = {
         method: "POST",
-        url: "/auth/login",
+        url: "/v1/auth/login",
         payload: {
           login: "notfounduser",
           password: "wrongpassword"

@@ -21,14 +21,16 @@ export function userRoutes(server: Hapi.Server, routePrefix:String = "/v1"){
     // add users
     server.route({
       method: RequestMethodEnum.Post,
-      path: "/users",
+      path: `${routePrefix}/users`,
       options: {
         handler: userController.addUser,
         tags: ['api'],
         validate: {
           payload: {
-            name: Joi.string().required().max(50),
-            department: Joi.string().required()
+            name: Joi.string().required().max(50).max(30),
+            department: Joi.string().required().max(30),
+            login: Joi.string().required().max(30),
+            password: Joi.string().required().max(30)
           }
         }
       }
@@ -49,20 +51,39 @@ export function userRoutes(server: Hapi.Server, routePrefix:String = "/v1"){
     }
   })
 
-  //update user
+  //update user infos 
   server.route({
     method: RequestMethodEnum.Put,
-    path: `${routePrefix}/users/{userId}`,
+    path: `${routePrefix}/usersInfos/{userId}`,
     options : {
-      handler: userController.updateUser,
+      handler: userController.updateUserInfos,
       tags: ['api'],
       validate: {
         params: {
           userId: Joi.number().required()
         },
         payload: {
-          name: Joi.string().max(50),
-          department: Joi.string()
+          name: Joi.string().required().max(50).max(30),
+          department: Joi.string().required().max(30)
+        }
+      }
+    }
+  })
+
+  // update user password
+  server.route({
+    method: RequestMethodEnum.Put,
+    path: `${routePrefix}/usersPassword/{userId}`,
+    options: {
+      handler: userController.updateUserPassword,
+      tags: ['api'],
+      validate: {
+        params: {
+          userId: Joi.number().required()
+        },
+        payload: {
+          old_password: Joi.string().required().max(50).max(30),
+          new_password: Joi.string().required().max(30)
         }
       }
     }

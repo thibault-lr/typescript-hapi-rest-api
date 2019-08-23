@@ -21,6 +21,25 @@ describe('Server testing', () => {
 
     let registrationsKeys = Object.keys(server.getServer().registrations);
 
-    expect(registrationsKeys).toEqual(["hapi-swagger","inert","vision","hapi-auth-jwt2"])
+    expect(registrationsKeys).toEqual(["hapi-auth-jwt2"])
+  })
+
+  describe('Testing plugins with staging envs', () => {
+    beforeAll( () => {
+      process.env.NODE_ENV = "staging"
+    })
+
+    it('Should register the plugins correctly', async () => {
+      const server = new Server({ host: "localhost", port: 4000 });
+      await server.initPlugins();
+
+      let registrationsKeys = Object.keys(server.getServer().registrations);
+
+      expect(registrationsKeys).toEqual(["hapi-swagger","inert","vision","hapi-auth-jwt2"])
+    })
+
+    afterAll( () => {
+      process.env.NODE_ENV = "test"
+    })
   })
 })
