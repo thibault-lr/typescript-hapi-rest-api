@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn} from "typeorm";
-import { compareSync } from "bcryptjs";
+import { compareSync, hashSync } from "bcryptjs";
 
 @Entity({
   name: "users",
@@ -33,6 +33,10 @@ export default class User {
 
   validatePassword(inputPassword: string) {
     return compareSync(inputPassword, this.password)
+  }
+
+  updatePassword(inputPassword: string) {
+    this.password = hashSync(inputPassword)
   }
 
 }

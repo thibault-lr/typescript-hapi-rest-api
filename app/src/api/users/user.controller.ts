@@ -4,6 +4,8 @@ import Errors from "./../../constants/Errors";
 
 import User from "./user.model"
 import { getRepository, getManager } from "typeorm";
+import { IChangePasswordRequest } from "./user.interfaces"
+
 
 class UserController {
 
@@ -37,7 +39,7 @@ class UserController {
     }
   }
 
-  public async updateUser(request: Hapi.Request, h: Hapi.ResponseToolkit) {
+  public async updateUserInfos(request: Hapi.Request, h: Hapi.ResponseToolkit) {
     try {
 
       const user = await getRepository("User").findOne(request.params.userId) as User;
@@ -60,6 +62,29 @@ class UserController {
     } catch (e){
       return Boom.badRequest();
     }
+  }
+
+  public async updateUserPassword(request: IChangePasswordRequest, h: Hapi.ResponseToolkit) {
+    try {
+      const user:User | undefined = await getRepository(User).findOne(request.params.userId);
+
+      if(! user) return Boom.notFound("User not found");
+
+      if(! user.validatePassword(request.payload.old_password)) 
+        return Boom.badRequest("Old password does not match")
+
+      user.updatePassword(request.payload.new_password)
+
+      await getRepository(User).update(request.params.userId, user);
+      return h.response({
+        code: "USER_UPDATED",
+        message: "User successfully updated"
+      });
+      
+    } catch(e) {
+      return Boom.badRequest();
+    }
+
   }
 
 
