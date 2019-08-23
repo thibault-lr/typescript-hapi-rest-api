@@ -36,6 +36,7 @@ class AuthController {
       return Boom.unauthorized();
     }
   }
+  
 }
 
 export default AuthController

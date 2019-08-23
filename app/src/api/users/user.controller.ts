@@ -8,7 +8,6 @@ import { getRepository, getManager } from "typeorm";
 class UserController {
 
   public async getUsersCount(request: Hapi.Request, h: Hapi.ResponseToolkit) {
-  
     const users = await getRepository("User").count();
     return h.response({ count: users });
   }
@@ -21,7 +20,6 @@ class UserController {
 
       return h.response({ message: "User successfully Added" });
     } catch (e) {
-      console.error(e);
       return Boom.badRequest(Errors.INTERNAL);
     }
   }
@@ -35,7 +33,6 @@ class UserController {
 
       return h.response({ user: user });
     } catch (e) {
-      console.error(e);
       return Boom.notFound(e);
     }
   }
@@ -61,7 +58,6 @@ class UserController {
         message: "User successfully updated"
       });
     } catch (e){
-      console.error(e)
       return Boom.badRequest();
     }
   }
@@ -78,7 +74,6 @@ class UserController {
 
       return h.response({code : "USER_DELETED",message : "User successfully deleted"})
     } catch (e) {
-      console.error(e);
       return Boom.badRequest();
     }
   }
