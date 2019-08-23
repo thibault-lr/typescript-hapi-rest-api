@@ -9,7 +9,7 @@ describe("Auth testing", () => {
 
   // start the server 
   beforeAll( async done => {
-    server = new Server({host: "localhost", port:3003});
+    server = new Server({host: "localhost", port:4002});
     await server.start()
     await Database.createConnection()
     server.initControllers();

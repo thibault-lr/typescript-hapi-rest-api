@@ -16,7 +16,7 @@ describe('Server testing', () => {
   })
 
   it('Should register the plugins correctly', async () => {
-    const server = new Server({ host: "localhost", port: 3003 });
+    const server = new Server({ host: "localhost", port: 4001 });
     await server.initPlugins();
 
     let registrationsKeys = Object.keys(server.getServer().registrations);

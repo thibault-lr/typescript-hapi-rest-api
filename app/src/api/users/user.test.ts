@@ -10,7 +10,7 @@ describe("User Testing", function() {
   let server: Server;
 
   beforeAll( async done => {
-    server = new Server({ host: "localhost", port: 3000 });
+    server = new Server({ host: "localhost", port: 4001 });
     await server.start()
     await Database.createConnection()
 
