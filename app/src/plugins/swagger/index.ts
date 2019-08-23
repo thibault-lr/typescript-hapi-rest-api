@@ -15,7 +15,15 @@ const swaggerPlugin = {
     },
     swaggerUI: true,
     documentationPage: true,
-    documentationPath: "/docs"
+    documentationPath: "/docs",
+    securityDefinitions: {
+      "api_key": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+
   }
 };
 

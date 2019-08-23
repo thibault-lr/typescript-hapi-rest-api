@@ -33,16 +33,20 @@ class Server {
   }
 
   initControllers(){
-    Users.init(this._server)
-    Auth.init(this._server)
+    Users.init(this._server,  "/v1")
+    Auth.init(this._server, "/v1")
+
   }
 
   async initPlugins() {
      try {
       
-      await SwaggerPlugin(this._server);
-      await InertPlugin(this._server)
-      await VisionPlugin(this._server); 
+      if(process.env.NODE_ENV === "staging"){
+        await SwaggerPlugin(this._server);
+        await InertPlugin(this._server);
+        await VisionPlugin(this._server); 
+      }
+
       await AuthPlugin(this._server);
     }
     catch (err) {

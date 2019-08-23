@@ -1,10 +1,9 @@
 import * as Hapi from "@hapi/hapi"
 import * as Joi from "@hapi/joi"
 import UserController from "./user.controller";
-import { Connection } from "typeorm";
 import RequestMethodEnum from './../../constants/RequestMethodEnum'
 
-export function userRoutes(server: Hapi.Server){
+export function userRoutes(server: Hapi.Server, routePrefix:String = "/v1"){
 
     const userController = new UserController();
     server.bind(userController);
@@ -12,7 +11,7 @@ export function userRoutes(server: Hapi.Server){
     //Get users
     server.route({
       method: RequestMethodEnum.Get,
-      path: "/users",
+      path: `${routePrefix}/users`,
       options: {
         handler: userController.getUsersCount,
         tags: ['api']
@@ -38,7 +37,7 @@ export function userRoutes(server: Hapi.Server){
   //get user
   server.route({
     method: RequestMethodEnum.Get,
-    path: "/users/{userId}",
+    path: `${routePrefix}/users/{userId}`,
     options: {
       handler: userController.getUser,
       tags: ['api'],
@@ -53,7 +52,7 @@ export function userRoutes(server: Hapi.Server){
   //update user
   server.route({
     method: RequestMethodEnum.Put,
-    path: "/users/{userId}",
+    path: `${routePrefix}/users/{userId}`,
     options : {
       handler: userController.updateUser,
       tags: ['api'],
@@ -72,7 +71,7 @@ export function userRoutes(server: Hapi.Server){
   //delete user
   server.route({
     method: RequestMethodEnum.Delete,
-    path: "/users/{userId}",
+    path: `${routePrefix}/users/{userId}`,
     options : {
       handler: userController.deleteUser,
       tags: ['api'],
