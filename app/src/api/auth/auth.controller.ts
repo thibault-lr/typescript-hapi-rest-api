@@ -1,7 +1,7 @@
 import * as Hapi from "@hapi/hapi"
 import Boom from "@hapi/boom"
 import { getRepository } from "typeorm";
-import {generateToken}  from "./../../utilities/jwt"
+import JWTUtils  from "./../../utilities/jwt"
 
 import UserModel from "./../users/user.model";
 import User from "./../users/user.model";
@@ -30,13 +30,11 @@ class AuthController {
       return Boom.unauthorized("Invalid password");
     }
 
-    return { token: generateToken(user) };
+    return { token: JWTUtils.generateToken(user) };
     } catch (error) {
       console.error(error);
       return Boom.unauthorized();
     }
-
-
   }
 }
 

@@ -14,7 +14,7 @@ class Server {
 
   constructor(options: Hapi.ServerOptions){
 
-    this._server = new Hapi.Server({host: options.host, port: options.port});
+    this._server = new Hapi.Server(options);
 
     this._setUpNodeExceptions();
   }
