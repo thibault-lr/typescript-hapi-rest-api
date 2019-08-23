@@ -1,4 +1,4 @@
-import * as DataBase from './../database';
+import DataBase from './../database';
 
 describe("Database testing", () => {
   it('Should throw an error with bad credentials', async () => {
@@ -9,7 +9,7 @@ describe("Database testing", () => {
     
     let error;
     try {
-      await DataBase.default.createConnection();
+      await DataBase.createConnection();
     } catch (e) {
       error = e;
     }

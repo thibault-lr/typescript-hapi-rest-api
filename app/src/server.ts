@@ -1,12 +1,12 @@
 import * as Hapi from "@hapi/hapi";
 import * as Users from "./api/users";
+import * as Auth from "./api/auth";
 
 // plugins 
 import VisionPlugin from "./plugins/vision";
 import InertPlugin from "./plugins/inert";
 import SwaggerPlugin from "./plugins/swagger";
-
-import { Connection } from "typeorm";
+import AuthPlugin from "./plugins/hapi-jwt";
 
 class Server {
 
@@ -14,7 +14,7 @@ class Server {
 
   constructor(options: Hapi.ServerOptions){
 
-    this._server = new Hapi.Server({host: options.host, port: options.port});
+    this._server = new Hapi.Server(options);
 
     this._setUpNodeExceptions();
   }
@@ -32,16 +32,22 @@ class Server {
     
   }
 
-  initControllers(database:Connection){
-    Users.init(this._server, database)
+  initControllers(){
+    Users.init(this._server,  "/v1")
+    Auth.init(this._server, "/v1")
+
   }
 
   async initPlugins() {
      try {
       
-      await SwaggerPlugin(this._server);
-      await InertPlugin(this._server)
-      await VisionPlugin(this._server); 
+      if(process.env.NODE_ENV === "staging"){
+        await SwaggerPlugin(this._server);
+        await InertPlugin(this._server);
+        await VisionPlugin(this._server); 
+      }
+
+      await AuthPlugin(this._server);
     }
     catch (err) {
       console.error(err);

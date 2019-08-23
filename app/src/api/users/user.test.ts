@@ -1,38 +1,34 @@
-import  * as Server from '../../server';
-import * as Database from './../../database';
-
+import Server from '../../server';
+import {getConnection} from "typeorm"
+import Database from '../../database';
+import * as Bcrypt from "bcryptjs"
+import User from './user.model';
 
 
 
 describe("User Testing", function() {
-  let server: Server.default;
+  let server: Server;
 
   beforeAll( async done => {
-    server = new Server.default({ host: "localhost", port: 3000 });
+    server = new Server({ host: "localhost", port: 4005 });
     await server.start()
-    await Database.default.createConnection()
-    server.initControllers(Database.default.conn);
+    await Database.createConnection()
+
+    server.initControllers();
     done();
   });
 
   afterAll( async done => {
-
-    await Database.default.conn.query("DELETE FROM users");
-
-    //reset the sequence 
-    await Database.default.conn.query("ALTER SEQUENCE users_id_seq RESTART WITH 1");
-    await Database.default.conn.query("UPDATE users SET id=nextval('users_id_seq')")
+    await server.getServer().stop()
     done();
   })
 
-  test("Should return the number of users", async (done) => {
 
-    jest.mock('./user.controller.ts')
-    
+  test("Should return the number of users", async (done) => {
 
     const options = {
       method: 'GET',
-      url: '/users',
+      url: '/v1/users',
     };
     const response = await server.getServer().inject(options);
 
@@ -49,10 +45,12 @@ describe("User Testing", function() {
 
     const options = {
       method: 'POST',
-      url: '/users',
+      url: '/v1/users',
       payload : {
         name: 'test',
-        department: 'test'
+        department: 'test',
+        login: 'test',
+        password: 'test'
       }
     }
 
@@ -67,7 +65,7 @@ describe("User Testing", function() {
 
     const options = {
       method: "POST",
-      url: "/users",
+      url: "/v1/users",
       payload: {
         name: "test" //no department provided
       }
@@ -80,10 +78,16 @@ describe("User Testing", function() {
 
   describe("User - inserted rows", function() {
 
+    let userSqlObj: any;
     // add a random user 
     beforeEach( async done => {
-      await Database.default.conn.query(`INSERT INTO users("name","department") VALUES('test','dep1')`);
+      userSqlObj = await getConnection().query(`INSERT INTO users("name","department") VALUES('test','dep1') RETURNING id`);
       done();
+    });
+
+    afterEach( async done => {
+      await getConnection().query(`DELETE FROM users WHERE id=${userSqlObj[0].id}`);
+      done()
     })
 
     test("It should retried a user with an id", async done => {
@@ -91,7 +95,7 @@ describe("User Testing", function() {
 
       const options = {
         method: "GET",
-        url: "/users/1"
+        url: `/v1/users/${userSqlObj[0].id}`
       };
 
       const response = await server.getServer().inject(options);
@@ -105,7 +109,7 @@ describe("User Testing", function() {
 
       const options = {
         method: "GET",
-        url: "/users/1234"
+        url: "/v1/users/1234"
       };
 
       const response = await server.getServer().inject(options);
@@ -123,9 +127,10 @@ describe("User Testing", function() {
     test('It should correctly update a user', async done => {
       const options = {
         method: "PUT",
-        url: "/users/1",
+        url: `/v1/usersInfos/${userSqlObj[0].id}`,
         payload: {
-          name: "test123"
+          name: "test123",
+          department: "dep"
         }
       };
 
@@ -139,9 +144,10 @@ describe("User Testing", function() {
     test('It should not update when user is not found', async done => {
       const options = {
         method: "PUT",
-        url: "/users/1234",
+        url: "/v1/usersInfos/1234",
         payload: {
-          name: "test123"
+          name: "test123",
+          department: "test"
         }
       };
 
@@ -155,7 +161,7 @@ describe("User Testing", function() {
     test('It should correctly delete a user', async done => {
       const options = {
         method: "DELETE",
-        url: "/users/1",
+        url: `/v1/users/${userSqlObj[0].id}`,
         payload: {
           name: "test123"
         }
@@ -171,7 +177,7 @@ describe("User Testing", function() {
     test('It should not delete when user is not found', async done => {
       const options = {
         method: "DELETE",
-        url: "/users/1234",
+        url: "/v1/users/1234",
         payload: {
           name: "test123"
         }
@@ -183,8 +189,87 @@ describe("User Testing", function() {
 
       done();      
     })
+
+  })
+
+
+  test('It should compare passwords correctly', () => {
+    const salt = Bcrypt.genSaltSync(10);
+    const password = Bcrypt.hashSync("test", salt);
+
+    const userM = new User()
+    userM.password = password;
+
+    expect(userM.validatePassword("test")).toBe(true)
   })
   
+
+  describe('User - changing password', () => {
+    let userSqlObj: any;
+
+    beforeEach( async done => {
+      const salt = Bcrypt.genSaltSync(10);
+      const password = Bcrypt.hashSync("test", salt);
+      userSqlObj = await getConnection().query(
+        `INSERT INTO "users"("name", "department", "login", "password") VALUES('test', 'dep1', 'testauth', '${password}') RETURNING id`);
+      done();   
+    })
+
+    afterEach(async done => {
+      await getConnection().query(`DELETE FROM users WHERE id = ${userSqlObj[0].id}`);
+      done();
+    })
+
+
+    test('It should update a user password', async done => {
+      const options = {
+        method: "PUT",
+        url: `/v1/usersPassword/${userSqlObj[0].id}`,
+        payload: {
+          old_password: 'test',
+          new_password: 'test2'
+        }
+      };
+
+      const response = await server.getServer().inject(options);
+      expect(response.statusCode).toBe(200)
+      done();
+    })
+
+    test('It should not update a user password with a not found user', async done => {
+      const options = {
+        method: "PUT",
+        url: `/v1/usersPassword/9999`,
+        payload: {
+          old_password: 'test',
+          new_password: 'test2'
+        }
+      };
+
+      const response = await server.getServer().inject(options);
+      expect(response.statusCode).toBe(404)
+      done();
+    })
+
+    test('It should not update a user password with incorrect password', async done => {
+      const options = {
+        method: "PUT",
+        url: `/v1/usersPassword/${userSqlObj[0].id}`,
+        payload: {
+          old_password: 'wrongpassword',
+          new_password: 'test2'
+        }
+      };
+
+      const response = await server.getServer().inject(options);
+      expect(response.result).toEqual({
+        statusCode: 400,
+        error: "Bad Request",
+        message: "Old password does not match"
+      });
+      done();
+    })
+  })
 
 
 });
