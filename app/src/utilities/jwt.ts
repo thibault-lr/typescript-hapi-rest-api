@@ -9,6 +9,6 @@ const generateToken = (user: UserModel): String => {
     return Jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn : JWTConfig.JWT_EXPIRES as unknown as string})
   }
 
-export  {
+export default {
   generateToken
 } 

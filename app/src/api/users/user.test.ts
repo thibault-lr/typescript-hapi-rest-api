@@ -1,7 +1,8 @@
 import Server from '../../server';
 import {getConnection} from "typeorm"
 import Database from '../../database';
-
+import * as Bcrypt from "bcryptjs"
+import User from './user.model';
 
 
 
@@ -12,25 +13,18 @@ describe("User Testing", function() {
     server = new Server({ host: "localhost", port: 3000 });
     await server.start()
     await Database.createConnection()
-    await getConnection().query("DELETE FROM users");
 
     server.initControllers();
     done();
   });
 
   afterAll( async done => {
-    await getConnection().query("DELETE FROM users");
-    //reset the sequence 
-    await getConnection().query("ALTER SEQUENCE users_id_seq RESTART WITH 1");
-    await getConnection().query("UPDATE users SET id=nextval('users_id_seq')")
     await server.getServer().stop()
     done();
   })
 
-  test("Should return the number of users", async (done) => {
 
-    jest.mock('./user.controller.ts')
-    
+  test("Should return the number of users", async (done) => {
 
     const options = {
       method: 'GET',
@@ -82,10 +76,16 @@ describe("User Testing", function() {
 
   describe("User - inserted rows", function() {
 
+    let userSqlObj: any;
     // add a random user 
     beforeEach( async done => {
-      await getConnection().query(`INSERT INTO users("name","department") VALUES('test','dep1')`);
+      userSqlObj = await getConnection().query(`INSERT INTO users("name","department") VALUES('test','dep1') RETURNING id`);
       done();
+    });
+
+    afterEach( async done => {
+      await getConnection().query(`DELETE FROM users`);
+      done()
     })
 
     test("It should retried a user with an id", async done => {
@@ -93,7 +93,7 @@ describe("User Testing", function() {
 
       const options = {
         method: "GET",
-        url: "/users/1"
+        url: `/users/${userSqlObj[0].id}`
       };
 
       const response = await server.getServer().inject(options);
@@ -125,7 +125,7 @@ describe("User Testing", function() {
     test('It should correctly update a user', async done => {
       const options = {
         method: "PUT",
-        url: "/users/1",
+        url: `/users/${userSqlObj[0].id}`,
         payload: {
           name: "test123"
         }
@@ -157,7 +157,7 @@ describe("User Testing", function() {
     test('It should correctly delete a user', async done => {
       const options = {
         method: "DELETE",
-        url: "/users/1",
+        url: `/users/${userSqlObj[0].id}`,
         payload: {
           name: "test123"
         }
@@ -185,6 +185,17 @@ describe("User Testing", function() {
 
       done();      
     })
+  })
+
+
+  test('It should compare passwords correctly', () => {
+    const salt = Bcrypt.genSaltSync(10);
+    const password = Bcrypt.hashSync("test", salt);
+
+    const userM = new User()
+    userM.password = password;
+
+    expect(userM.validatePassword("test")).toBe(true)
   })
   
 

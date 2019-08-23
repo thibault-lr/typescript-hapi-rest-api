@@ -16,7 +16,7 @@
     "preprod": "yarn run clean ",
     "prod": "tsc -project tsconfig.prod.json",
     "postprod": "NODE_ENV=production node ./build/index.js",
-    "test": "NODE_ENV=test jest --coverage"
+    "test": "NODE_ENV=test jest --coverage --all"
   },
   "dependencies": {
     "@hapi/hapi": "^18.3.1",
